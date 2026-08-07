@@ -166,13 +166,18 @@ function directiveFor(session: Session) {
 function applyTurn(session: Session, turn: ModelTurn): InterviewResponse {
   session.turns.push({ role: "assistant", content: turn.reply });
   if (turn.askedQuestion) session.questionsAsked += 1;
-  if (turn.targetDay && !session.daysCovered.includes(turn.targetDay)) {
-    session.daysCovered.push(turn.targetDay);
+
+  // Fall back to the day mentioned in the reply when the model omits targetDay.
+  const mentioned = /\bday\s+(\d{1,2})\b/i.exec(turn.reply);
+  const day = turn.targetDay ?? (mentioned?.[1] ? Number(mentioned[1]) : null);
+  if (day && day >= 1 && day <= 31 && !session.daysCovered.includes(day)) {
+    session.daysCovered.push(day);
   }
 
   const quotaMet =
     session.questionsAsked >= MIN_QUESTIONS && session.daysCovered.length >= MIN_DAYS;
-  const hardStop = session.questionsAsked >= MAX_QUESTIONS;
+  const exchanges = session.turns.filter((t) => t.role === "user").length;
+  const hardStop = session.questionsAsked >= MAX_QUESTIONS || exchanges >= MAX_QUESTIONS + 6;
   const end = (turn.wantToEnd && quotaMet) || hardStop;
 
   if (end) {
