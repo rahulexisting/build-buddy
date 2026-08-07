@@ -38,7 +38,9 @@ function sweep() {
 }
 
 function moduleFor(day: number) {
-  return MODULES.find((m) => day >= m.days[0] && day <= m.days[1])?.title ?? "General";
+  return (
+    MODULES.find((m) => day >= (m.days[0] ?? 0) && day <= (m.days[1] ?? 0))?.title ?? "General"
+  );
 }
 
 /** Lightweight retrieval: only the curriculum days this candidate actually touched. */
@@ -229,7 +231,7 @@ export async function continueInterview(
     return {
       reply: "Interview completed.",
       done: true,
-      feedback: session.feedback,
+      ...(session.feedback ? { feedback: session.feedback } : {}),
       progress: { questionsAsked: session.questionsAsked, daysCovered: session.daysCovered },
     };
   }
