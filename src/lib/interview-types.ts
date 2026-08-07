@@ -1,9 +1,9 @@
 export type Mission = {
   day: number;
   title: string;
-  passed?: boolean;
-  skipped?: boolean;
-  attempts?: number;
+  passed?: boolean | undefined;
+  skipped?: boolean | undefined;
+  attempts?: number | undefined;
 };
 
 export type CandidateMember = {
