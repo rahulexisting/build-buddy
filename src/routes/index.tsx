@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Personalized technical interviews generated from curriculum data and candidate learning signals.",
+          "Adaptive, multi-turn technical interviews grounded in each candidate's 31-day AI Cohort learning record, with structured feedback at the end.",
       },
     ],
   }),
